@@ -21,6 +21,7 @@ import com.pi4j.drivers.sensor.Sensor;
 import com.pi4j.drivers.sensor.SensorDescriptor;
 import com.pi4j.io.SerialCircuitIO;
 import com.pi4j.io.i2c.I2C;
+import com.pi4j.io.spi.Spi;
 
 import java.io.Closeable;
 import java.io.IOException;
@@ -421,7 +422,10 @@ public class Bmx280Driver implements Sensor {
     }
 
     private void writeRegister(int register, int value) {
-        ioBuf[0] = (byte) register;
+        // The constants have the SPI read bit baked in, so we need to clear it here for SPI writs (and do noting in
+        // reads). Unfortunately, clearing the bit for I2C doesn't work as expected, so we have to have a case
+        // distinction here.
+        ioBuf[0] = (byte) (io instanceof Spi ? register & 0x7F : register);
         ioBuf[1] = (byte) value;
         io.write(ioBuf, 0, 2);
     }
