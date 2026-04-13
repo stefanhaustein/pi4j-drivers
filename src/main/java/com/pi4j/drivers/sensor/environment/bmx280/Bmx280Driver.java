@@ -98,7 +98,8 @@ public class Bmx280Driver implements Sensor {
     }
 
     /**
-     * Creates a BMx280 I2C driver using the given IO Connection
+     * Creates a BMx280 I2C or SPI driver using the given SerialCircuitIO Connection (Spi and I2C both implement this
+     * interface).
      */
     public Bmx280Driver(SerialCircuitIO io) {
         this.io = io;
@@ -164,12 +165,10 @@ public class Bmx280Driver implements Sensor {
 
     @Override
     public void close() {
-        if (io instanceof Closeable) {
-            try {
-                ((Closeable) io).close();
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
+        try {
+            ((Closeable) io).close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 
