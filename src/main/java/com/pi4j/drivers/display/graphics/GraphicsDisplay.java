@@ -71,9 +71,7 @@ public class GraphicsDisplay {
             displayWidth = driver.getDisplayInfo().getHeight();
             displayHeight = driver.getDisplayInfo().getWidth();
         }
-        // +7 buffer for granularity vs. width mismatches, e.g. display width 122 with granularity 8 will just
-        // read over the end instead of more complex handing for this case.
-        displayBuffer = new int[displayWidth * displayHeight + 7000];
+        displayBuffer = new int[displayWidth * displayHeight];
         drivers.add(new DriverEntry(0, 0, driver, rotation, mirror));
     }
 
@@ -84,7 +82,7 @@ public class GraphicsDisplay {
     public GraphicsDisplay(int displayWidth, int displayHeight) {
         this.displayWidth = displayWidth;
         this.displayHeight = displayHeight;
-        displayBuffer = new int[displayWidth * displayHeight + 7]; // +7 see comment in other ctor.
+        displayBuffer = new int[displayWidth * displayHeight]; 
     }
 
 
