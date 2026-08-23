@@ -70,11 +70,11 @@ public abstract class Ssd1680Driver implements GraphicsDisplayDriver {
     }
 
     public void setPixels(int x, int y, int width, int height, byte[] data) {
-
+        if (width % 8 != 0) {
+            width += 8 - (width % 8);
+        }
         setWindow(x, y, x + width - 1, y + height - 1);
-
         int byteCount = (width * height + 7) / 8;
-
         sendCommand(Command.WRITE_RAM);
         sendData(data, 0, byteCount);
         sendCommand(Command.MASTER_ACTIVATION);
