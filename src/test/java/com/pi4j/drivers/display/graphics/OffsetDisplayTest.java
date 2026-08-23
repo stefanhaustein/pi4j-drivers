@@ -14,6 +14,7 @@ public class OffsetDisplayTest {
 
         GraphicsDisplayDriver driver = new FakeGraphicsDisplayDriver(100, 100, PixelFormat.RGB_444);
         GraphicsDisplay display = new GraphicsDisplay(100,100);
+        display.setTransferDelayMillis(0);
 	display.attachDriver( 0, 0, driver, Rotation.ROTATE_0 );
     }
 
@@ -22,6 +23,7 @@ public class OffsetDisplayTest {
 
         GraphicsDisplayDriver driver = new FakeGraphicsDisplayDriver(100, 100, PixelFormat.RGB_444);
         GraphicsDisplay display = new GraphicsDisplay(100,100);
+        display.setTransferDelayMillis(0);
         display.attachDriver( -10, -10, driver, Rotation.ROTATE_0 );
     }
 
@@ -30,6 +32,7 @@ public class OffsetDisplayTest {
 
         GraphicsDisplayDriver driver = new FakeGraphicsDisplayDriver(100, 100, PixelFormat.RGB_444);
         GraphicsDisplay display = new GraphicsDisplay(100,100);
+        display.setTransferDelayMillis(0);
         display.attachDriver( 10, 10, driver, Rotation.ROTATE_0 );
     }
 
@@ -38,6 +41,7 @@ public class OffsetDisplayTest {
 
         GraphicsDisplayDriver driver = new FakeGraphicsDisplayDriver(100, 100, PixelFormat.RGB_444);
         GraphicsDisplay display = new GraphicsDisplay(100,100);
+        display.setTransferDelayMillis(0);
         display.attachDriver( 1, 0, driver, Rotation.ROTATE_0 );
     }
 
@@ -46,6 +50,7 @@ public class OffsetDisplayTest {
 
         GraphicsDisplayDriver driver = new FakeGraphicsDisplayDriver(100, 100, PixelFormat.RGB_444);
         GraphicsDisplay display = new GraphicsDisplay(100,100);
+        display.setTransferDelayMillis(0);
         display.attachDriver( 0, 1, driver, Rotation.ROTATE_0 );
     }
 }
