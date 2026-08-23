@@ -82,7 +82,7 @@ public class GraphicsDisplay {
     public GraphicsDisplay(int displayWidth, int displayHeight) {
         this.displayWidth = displayWidth;
         this.displayHeight = displayHeight;
-        displayBuffer = new int[displayWidth * displayHeight]; 
+        displayBuffer = new int[displayWidth * displayHeight];
     }
 
 
@@ -102,7 +102,13 @@ public class GraphicsDisplay {
      */
     public void attachDriver(int x0, int y0, GraphicsDisplayDriver driver, Rotation rotation, Mirror mirror) {
         synchronized (lock) {
-            drivers.add(new DriverEntry(x0, y0, driver, rotation.minus(driver.getDisplayInfo().getImplicitRotation()), mirror));
+            DriverEntry entry = new DriverEntry(x0, y0, driver, rotation.minus(driver.getDisplayInfo().getImplicitRotation()), mirror);
+            if (entry.driver.getDisplayInfo().getXGranularity() != 1 &&
+                    (x0 < 0 || y0 < 0 || x0 + entry.getSourceWidth() > displayWidth || y0 + entry.getSourceHeight() > displayHeight)) {
+                throw new IllegalArgumentException(
+                        "Drivers requiring a position granularity cannot be placed (partially) outside the display");
+            }
+            drivers.add(entry);
             markModified(0, 0, displayWidth, displayHeight);
         }
     }
@@ -327,6 +333,19 @@ public class GraphicsDisplay {
                     Math.max(driver.getTransferLimit(), (bitsPerRow + 7) / 8),
                     ((bitsPerRow + 7) / 8 * driver.getDisplayInfo().getHeight()))];
         }
+
+        int getSourceWidth() {
+            return rotation == Rotation.ROTATE_90 || rotation == Rotation.ROTATE_270
+                    ? driver.getDisplayInfo().getHeight()
+                    : driver.getDisplayInfo().getWidth();
+        }
+
+        int getSourceHeight() {
+            return rotation == Rotation.ROTATE_90 || rotation == Rotation.ROTATE_270
+                    ? driver.getDisplayInfo().getWidth()
+                    : driver.getDisplayInfo().getHeight();
+        }
+
 
         private void transferBuffer(int xMin, int yMin, int xMax, int yMax) {
             ScanDirection columnScanDirection;
