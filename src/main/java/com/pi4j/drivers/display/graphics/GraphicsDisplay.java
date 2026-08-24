@@ -408,8 +408,8 @@ public class GraphicsDisplay {
                 case RIGHT_TO_LEFT -> {
                     sourceX0 = xMax - 1;
                     sourceStrideX = -1;
-                    destinationXMin = xMin - x0;
-                    destinationXMax = xMax - x0;
+                    destinationXMin = displayWidth - xMax - x0;
+                    destinationXMax = displayWidth - xMin - x0;
                 }
                 case TOP_DOWN -> {
                     sourceY0 = yMin;
@@ -420,8 +420,8 @@ public class GraphicsDisplay {
                 case BOTTOM_UP -> {
                     sourceY0 = yMax - 1;
                     sourceStrideX = -displayWidth;
-                    destinationXMin = yMin - y0;
-                    destinationXMax = yMax - y0;
+                    destinationXMin = displayHeight - yMax - y0;
+                    destinationXMax = displayHeight - yMin - y0;
                 }
             }
             switch (rowScanDirection) {
@@ -434,8 +434,8 @@ public class GraphicsDisplay {
                 case BOTTOM_UP -> {
                     sourceY0 = yMax - 1;
                     sourceStrideY = -displayWidth;
-                    destinationYMin = yMin - y0;
-                    destinationYMax = yMax - y0;
+                    destinationYMin = displayHeight - yMax - y0;
+                    destinationYMax = displayHeight - yMin - y0;
                 }
                 case LEFT_TO_RIGHT -> {
                     sourceX0 = xMin;
@@ -446,8 +446,8 @@ public class GraphicsDisplay {
                 case RIGHT_TO_LEFT -> {
                     sourceX0 = xMax - 1;
                     sourceStrideY = -1;
-                    destinationYMin = xMin - x0;
-                    destinationYMax = xMax - x0;
+                    destinationYMin = displayWidth - xMax - x0;
+                    destinationYMax = displayWidth - xMin - x0;
                 }
             }
             transferBuffer(
@@ -464,13 +464,6 @@ public class GraphicsDisplay {
         private void transferBuffer(int sourceAddress, int sourceStrideX, int sourceStrideY, int xMin, int yMin, int xMax, int yMax) {
             GraphicsDisplayDescriptor displayInfo = driver.getDisplayInfo();
 
-            // Bail out if the changed area is outside the area governed by this device.
-            if (xMax <= 0 || yMax <= 0
-                    || xMin >= displayInfo.getWidth() || yMin >= displayInfo.getHeight()
-                    || xMax <= xMin || yMax <= yMin) {
-                return;
-            }
-
             // Restrict coordinates to the display size.
             if (xMin < 0) {
                 sourceAddress -= xMin * sourceStrideX;
@@ -479,6 +472,13 @@ public class GraphicsDisplay {
             if (yMin < 0) {
                 sourceAddress -= yMin * sourceStrideY;
                 yMin = 0;
+            }
+
+            // Bail out if the changed area is outside the area governed by this device.
+            if (xMax <= 0 || yMax <= 0
+                    || xMin >= displayInfo.getWidth() || yMin >= displayInfo.getHeight()
+                    || xMax <= xMin || yMax <= yMin) {
+                return;
             }
 
             // Make sure to match device x-alignment constraints.
