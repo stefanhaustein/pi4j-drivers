@@ -18,7 +18,6 @@ public abstract class Ssd1680Driver implements GraphicsDisplayDriver {
     private final GraphicsDisplayDescriptor descriptor;
     private byte[] transferBuffer = new byte[64];
 
-
     protected Ssd1680Driver(
             Spi spi,
             DigitalOutput dc,
@@ -38,11 +37,6 @@ public abstract class Ssd1680Driver implements GraphicsDisplayDriver {
 
         reset();
         sendCommand(Command.SW_RESET);
-        sendCommand(Command.DRIVER_OUTPUT_CONTROL, 0xf9, 0, 0);
-        sendCommand(Command.DATA_ENTRY_MODE_SETTING, 0x03);
-        sendCommand(Command.DISPLAY_UPDATE_CONTROL_1, 0, 0x80);
-        sendCommand(Command.DISPLAY_UPDATE_CONTROL_2, 0xf7);
-        sendCommand(Command.TEMPERATURE_SENSOR_CONTROL, 0x80);
     }
 
 
