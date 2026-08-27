@@ -397,7 +397,26 @@ public class GraphicsDisplay {
             int destinationYMin = 0;
             int destinationYMax = 0;
 
+            // Illustration for the destination calculation for the "reverse" directions:
+            //
+            //  0
+            //  |<------ Full screen buffer (displayWidth) ----------->|
+            //  |                                                      |
+            //  |      x0                                              |
+            //  |      |<------- driver screen ------->|               |
+            //  |      |      (getSourceWidth())       |               |
+            //  |      |                               |               |
+            //  |      |   xMin              xMax      |               |
+            //  |      |    |<- refresh area ->|       |               |
+            //  |------+----+------------------+-------+---------------|
+            //  |      |    |                  |       |               |
+            //  |      |    |                  |<------| x0 + getSourceWidth() - xMax
+            //  |      |    |                  |       |               |
+            //  |      |    |<-------------------------| x0 + getSourceWidth() - xMin
+            //
+            //
             // Note that the two switches set sourceX0 or sourceY0, depending on the rotation.
+
             switch (columnScanDirection) {
                 case LEFT_TO_RIGHT -> {
                     sourceX0 = xMin;
@@ -408,8 +427,8 @@ public class GraphicsDisplay {
                 case RIGHT_TO_LEFT -> {
                     sourceX0 = xMax - 1;
                     sourceStrideX = -1;
-                    destinationXMin = displayWidth - xMax - x0;
-                    destinationXMax = displayWidth - xMin - x0;
+                    destinationXMin = x0 + getSourceWidth() - xMax;
+                    destinationXMax = x0 + getSourceWidth() - xMin;
                 }
                 case TOP_DOWN -> {
                     sourceY0 = yMin;
@@ -420,8 +439,8 @@ public class GraphicsDisplay {
                 case BOTTOM_UP -> {
                     sourceY0 = yMax - 1;
                     sourceStrideX = -displayWidth;
-                    destinationXMin = displayHeight - yMax - y0;
-                    destinationXMax = displayHeight - yMin - y0;
+                    destinationXMin = y0 + getSourceHeight() - yMax;
+                    destinationXMax = y0 + getSourceHeight() - yMin;
                 }
             }
             switch (rowScanDirection) {
@@ -434,8 +453,8 @@ public class GraphicsDisplay {
                 case BOTTOM_UP -> {
                     sourceY0 = yMax - 1;
                     sourceStrideY = -displayWidth;
-                    destinationYMin = displayHeight - yMax - y0;
-                    destinationYMax = displayHeight - yMin - y0;
+                    destinationYMin = y0 + getSourceHeight() - yMax;
+                    destinationYMax = y0 + getSourceHeight() - yMin;
                 }
                 case LEFT_TO_RIGHT -> {
                     sourceX0 = xMin;
@@ -446,8 +465,8 @@ public class GraphicsDisplay {
                 case RIGHT_TO_LEFT -> {
                     sourceX0 = xMax - 1;
                     sourceStrideY = -1;
-                    destinationYMin = displayWidth - xMax - x0;
-                    destinationYMax = displayWidth - xMin - x0;
+                    destinationYMin = x0 + getSourceWidth() - xMax;
+                    destinationYMax = x0 + getSourceWidth() - xMin;
                 }
             }
             transferBuffer(
