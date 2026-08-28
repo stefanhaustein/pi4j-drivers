@@ -1,6 +1,7 @@
 package com.pi4j.drivers.display.graphics.ssd1680;
 
 import com.pi4j.context.Context;
+import com.pi4j.drivers.display.graphics.ssd1677.UpdateMode;
 import com.pi4j.io.gpio.digital.DigitalInput;
 import com.pi4j.io.gpio.digital.DigitalOutput;
 import com.pi4j.io.spi.Spi;
@@ -24,5 +25,18 @@ public class Waveshare2in7V2 extends Ssd1680Driver {
                 context.create(DigitalOutput.newConfigBuilder(context).bcm(17)),
                 context.create(DigitalInput.newConfigBuilder(context).bcm(24)));
 
+    }
+
+    @Override
+    protected void setUpdateMode(UpdateMode mode) {
+        sendCommand(Command.SW_RESET);
+
+        sendCommand(Command.DATA_ENTRY_MODE_SETTING, 0x03);
+        if (mode == UpdateMode.PARTIAL) {
+            sendCommand(Command.BORDER_WAVEFORM_CONTROL, 0x80);
+            sendCommand(Command.DISPLAY_UPDATE_CONTROL_2, 0xff);
+        } else {
+            sendCommand(Command.DISPLAY_UPDATE_CONTROL_2, 0xf7);
+        }
     }
 }

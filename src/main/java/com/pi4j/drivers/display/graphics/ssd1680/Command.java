@@ -28,6 +28,7 @@ public enum Command {
     DISPLAY_UPDATE_CONTROL_2(0x22, 1),
 
     WRITE_RAM(0x24, -1),
+    WRITE_RAM_2(0x26, -1),
 
     BORDER_WAVEFORM_CONTROL(0x3C, 1),
 
